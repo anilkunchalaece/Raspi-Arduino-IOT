@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Getting data from a sensor</title>
+	
+</head>
+
+<body>
+	<header>
+		<h1>Control LED from Web Interface</h1>
+		<p>ON and OFF and Brightness Control</p>
+	</header>
+
+	<section id="main" role="main">
+		<button id="ledOn">LED ON!</button>
+		<button id="ledOff">LED OFF!</button>
+
+	</section>
+	<section>
+	<form id="form1">
+	Enter the Brightness Value  <input type="text" id="inputValue">
+		<input type="submit" value="submit">
+	</form>
+	</section>
+	<footer>
+	Done By Kunchala Anil.. Using PubNub Data Streams
+	</footer>
+
+	<!-- including the latest PubNub JavaScript SDK -->
+	<script src="http://cdn.pubnub.com/pubnub-3.7.1.min.js"></script>
+	<script>
+(function() {
+
+	// DOM
+	var buttonOn = document.querySelector('#ledOn');
+	var buttonOff= document.querySelector('#ledOff');
+ 
+
+	// This is the channel name you are subscribing in remote-led.py
+	var channel = 'anil';
+
+	// Init - Get your own keys at admin.pubnub.com
+	var p = PUBNUB.init({
+		subscribe_key: 'sub-c-9ddf7ad2-cfec-11e5-b522-0619f8945a4f',
+		publish_key:   'pub-c-9e022950-208f-49aa-9873-c560add30b41'
+	});
+
+	// Sending data
+	function sendValue() {
+    p.publish({
+      channel : channel, 
+      message : {led : document.getElementById("inputValue").value}
+    });
+  }
+
+	function lightOn() {
+	p.publish({
+		channel : channel,
+		message : {led : "ON"}
+		});
+	}
+
+	function lightOff() {
+	p.publish({
+		channel : channel,
+		message : {led : "OFF"}
+		});
+	} 
+
+    // Click event
+	buttonOn.addEventListener("click",lightOn);
+	buttonOff.addEventListener("click",lightOff)
+	document.getElementById("form1").addEventListener("submit",sendValue);
+
+})();
+	</script>
+	
+</body>
+</html>
